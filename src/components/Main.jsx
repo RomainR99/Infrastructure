@@ -5,6 +5,7 @@ function Main() {
     return(
         <div>
             <Formulaire/>
+            <Footer/>
         </div>
     )
 }
