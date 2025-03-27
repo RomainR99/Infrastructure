@@ -1,4 +1,5 @@
-import Formulaire from "./Formulaire"
+import Formulaire from "./Formulaire.jsx"
+import Footer from "./Footer.jsx"
 
 function Main() {
     return(
