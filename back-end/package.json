@@ -1,0 +1,17 @@
+{
+  "name": "infrastructure",
+  "version": "1.0.0",
+  "description": "projet",
+  "license": "ISC",
+  "author": "Romain Roth",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.13.0",
+    "nodemon": "^3.1.9"
+  }
+}
