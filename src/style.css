@@ -54,3 +54,11 @@ button {
 button:hover{
     background-color: #0056b3;
 }
+
+
+#footer {
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    color: white;
+}
