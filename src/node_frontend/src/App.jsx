@@ -1,10 +1,19 @@
-import DataTable from "./DataTable.jsx";
-import "./App.css";
+import { Suspense, lazy } from "react";
+import ErrorBoundary from "./ErrorBoundary";
 
-export default function App() {
+const DataTable = lazy(() => import("./DataTable"));
+
+function App() {
   return (
-    <div className="App">
-      <DataTable />
-    </div>
+    <ErrorBoundary>
+      <Suspense fallback={<div>Chargement en cours...</div>}>
+        <main>
+          <DataTable />
+        </main>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
+
+export default App;
+
