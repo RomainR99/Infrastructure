@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import axios from "axios";
 
 const DataTable = () => {
   const [data, setData] = useState([]);
@@ -8,6 +9,8 @@ const DataTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const outsideClick = useRef(null);
   const itemsPerPage = 5;
+  
+  
 
   useEffect(() => {
     setCurrentPage(1);
@@ -36,7 +39,7 @@ const DataTable = () => {
 
   // 📌 Nouveau useEffect : Récupérer les données depuis le serveur
   useEffect(() => {
-    fetch("http://localhost:5000/api/data")
+    fetch("http://localhost:8000/api/data")
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.error("Erreur lors du chargement des données", err));
@@ -52,6 +55,8 @@ const DataTable = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  
+
   const handleAddClick = () => {
     if (formData.name && formData.email && formData.phone) {
       const newItem = {
@@ -59,20 +64,19 @@ const DataTable = () => {
         email: formData.email,
         phone: formData.phone,
       };
-
-      fetch("http://localhost:5000/api/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newItem),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setData((prevData) => [...prevData, data]);
+  
+      axios
+        .post("http://localhost:8000/api/data", newItem, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          setData((prevData) => [...prevData, response.data]);
           setFormData({ name: "", email: "", phone: "" });
         })
         .catch((err) => console.error("Erreur lors de l'ajout", err));
     }
   };
+  
 
   const handleEdit = (id, updatedData) => {
     if (!editId || editId !== id) {
@@ -86,9 +90,7 @@ const DataTable = () => {
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/api/data/${id}`, {
-      method: "DELETE",
-    })
+    fetch(`http://localhost:8000/api/data/${id}`, { method: "DELETE" })
       .then(() => {
         setData((prevData) => prevData.filter((item) => item.id !== id));
       })
@@ -111,6 +113,7 @@ const DataTable = () => {
           <input type="text" placeholder="Téléphone" name="phone" value={formData.phone} onChange={handleInputChange} />
         </div>
         <button className="add" onClick={handleAddClick}>Ajouter</button>
+        <button className="edit" onClick={() => setEditId(item.id)}>Edit</button>
       </div>
 
       <div className="search-table-container">
