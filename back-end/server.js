@@ -17,7 +17,7 @@ app.post('/api/data', (req, res) => {
     email,
     phone
   };
-  
+
   data.push(newItem);  // Ajoute l'élément à la liste de données
   res.status(201).json(newItem);  // Renvoie l'élément ajouté avec l'ID généré
 });
@@ -35,4 +35,7 @@ const PORT = ENV.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
 

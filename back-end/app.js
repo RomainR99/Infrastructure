@@ -6,9 +6,6 @@ import cors from 'cors'
 
 const app = express()
 
-// IMPORT DES ROUTES
-
-
 //CONNEXION MONGO
 connectMongoDB(ENV.URI_MONGO, ENV.DB_NAME);
 

@@ -3,14 +3,13 @@ import axios from "axios";
 
 const DataTable = () => {
   const [data, setData] = useState([]);
-  const [editId, setEditId] = useState(false);
+  const [editId, setEditId] = useState(null); // Initialisez l'ID à null, pas à false
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const outsideClick = useRef(null);
   const itemsPerPage = 5;
-  
-  
+  const [error, setError] = useState(null); // Utilisation de l'état error pour afficher les erreurs
 
   useEffect(() => {
     setCurrentPage(1);
@@ -28,7 +27,7 @@ const DataTable = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (outsideClick.current && !outsideClick.current.contains(event.target)) {
-        setEditId(false);
+        setEditId(null); // Mettre editId à null lorsque l'utilisateur clique en dehors
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -42,7 +41,10 @@ const DataTable = () => {
     fetch("http://localhost:8000/api/data")
       .then((res) => res.json())
       .then((data) => setData(data))
-      .catch((err) => console.error("Erreur lors du chargement des données", err));
+      .catch((err) => {
+        setError("Erreur lors du chargement des données");
+        console.error("Erreur lors du chargement des données", err);
+      });
   }, []);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -55,8 +57,6 @@ const DataTable = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  
-
   const handleAddClick = () => {
     if (formData.name && formData.email && formData.phone) {
       const newItem = {
@@ -64,7 +64,7 @@ const DataTable = () => {
         email: formData.email,
         phone: formData.phone,
       };
-  
+
       axios
         .post("http://localhost:8000/api/data", newItem, {
           headers: { "Content-Type": "application/json" },
@@ -73,15 +73,15 @@ const DataTable = () => {
           setData((prevData) => [...prevData, response.data]);
           setFormData({ name: "", email: "", phone: "" });
         })
-        .catch((err) => console.error("Erreur lors de l'ajout", err));
+        .catch((err) => {
+          setError("Erreur lors de l'ajout");
+          console.error("Erreur lors de l'ajout", err);
+        });
     }
   };
-  
 
   const handleEdit = (id, updatedData) => {
-    if (!editId || editId !== id) {
-      return;
-    }
+    if (editId !== id) return;
 
     const updatedList = data.map((item) =>
       item.id === id ? { ...item, ...updatedData } : item
@@ -94,7 +94,10 @@ const DataTable = () => {
       .then(() => {
         setData((prevData) => prevData.filter((item) => item.id !== id));
       })
-      .catch((err) => console.error("Erreur lors de la suppression", err));
+      .catch((err) => {
+        setError("Erreur lors de la suppression");
+        console.error("Erreur lors de la suppression", err);
+      });
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -106,6 +109,8 @@ const DataTable = () => {
 
   return (
     <div className="container">
+      {error && <div className="error-message">{error}</div>} {/* Affichage de l'erreur */}
+      
       <div className="add-container">
         <div className="info-container">
           <input type="text" placeholder="Nom" name="name" value={formData.name} onChange={handleInputChange} />
@@ -113,7 +118,6 @@ const DataTable = () => {
           <input type="text" placeholder="Téléphone" name="phone" value={formData.phone} onChange={handleInputChange} />
         </div>
         <button className="add" onClick={handleAddClick}>Ajouter</button>
-        <button className="edit" onClick={() => setEditId(item.id)}>Edit</button>
       </div>
 
       <div className="search-table-container">
