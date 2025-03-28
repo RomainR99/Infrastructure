@@ -4,7 +4,7 @@ import express from 'express'
 import mongoose from 'mongoose';
 import cors from 'cors'
 
-const PORT = ENV.PORT || 5173;
+const PORT = ENV.PORT || 8000;
 
 app.use(express.json())
 app.use(cors())
