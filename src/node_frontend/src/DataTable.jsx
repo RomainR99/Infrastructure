@@ -65,8 +65,8 @@ const DataTable = () => {
         phone: formData.phone,
       };
 
-      axios
-        .post("http://localhost:8000/api/data", newItem, {
+      axios //c'est le meme chemin que dans Postman
+        .post("http://localhost:8000/api/candidatures/post", newItem, {
           headers: { "Content-Type": "application/json" },
         })
         .then((response) => {
