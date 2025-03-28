@@ -9,9 +9,38 @@ function Formulaire() {
         const [dateDenvoi, setDateDenvoi] = useState('')
         const [statut, setStatut] = useState('statut')
 
-        const onSubmit = () => {
-            alert(`Submitted ${entreprise} ${poste} ${lienDeLoffre} ${dateDenvoi} ${statut}`)
+        const onSubmit = async (e) => {
+            e.preventDefault()
+            const data = { entreprise, poste, lienDeLoffre, dateDenvoi, statut}
+
+            try {
+                const response = await fetch('http://localhost:5173/api/candidatures', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                })
+
+                if (response.ok) {
+                    alert(`Submitted ${entreprise} ${poste} ${lienDeLoffre} ${dateDenvoi} ${statut}`) 
+                }
+            } catch (error) {
+                console.error("Erreur de l'envoie: ", error);
+            }
         }
+
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const response = await fetch('http://localhost:5173/api/candidatures')
+                    const result = await response.json()
+                    console.log(result);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            fetchData()
+        }, [])
 
         const options = [
             {value: 'En attente', label: 'En attente'},
